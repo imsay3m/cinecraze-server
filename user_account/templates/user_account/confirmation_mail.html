@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #1A1A1A;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #141414;
+            border-radius: 8px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #0F0F0F;
+        }
+
+        .header h1 {
+            color: #E50000;
+            margin: 0;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .content h2 {
+            color: #fff;
+        }
+
+        .content p {
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #E50000;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .alternative {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #0F0F0F;
+            border-radius: 5px;
+        }
+
+        .alternative p {
+            color: #fff;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .alternative a {
+            color: #999999;
+            word-break: break-all;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #0F0F0F;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            color: #fff;
+            font-size: 12px;
+        }
+    </style>
+    <title>User Verification - CineCraze</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CineCraze</h1>
+        </div>
+        <div class="content">
+            <h2>Verify Your Email Address</h2>
+            <p>Hi there,</p>
+            <p>Thank you for signing up for CineCraze! Please click the button below to verify your email address and
+                complete your registration.</p>
+            <a href="{{verification_link}}" class="button">Verify Email</a>
+            <p>If you did not sign up for CineCraze, please ignore this email.</p>
+        </div>
+        <div class="alternative">
+            <p>If the above link doesn't work, try copying and pasting the link below into your browser. If you continue
+                to experience problems, please contact us.</p>
+            <br>
+            <p><a href="{{verification_link}}">{{verification_link}}</a></p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 CineCraze. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
