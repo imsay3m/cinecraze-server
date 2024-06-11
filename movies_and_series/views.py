@@ -49,6 +49,12 @@ def fetch_movie_data_from_tmdb(tmdb_id):
         poster_url = (
             f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else ""
         )
+        backdrop_path = tmdb_data.get("backdrop_path")
+        backdrop_url = (
+            f"https://image.tmdb.org/t/p/original{backdrop_path}"
+            if backdrop_path
+            else ""
+        )
         imdb_id = tmdb_data.get("imdb_id")
         imdb_rating = tmdb_data.get("vote_average")
         tmdb_rating = tmdb_data.get("vote_average")
@@ -92,6 +98,7 @@ def fetch_movie_data_from_tmdb(tmdb_id):
             "overview": overview,
             "release_date": release_date,
             "poster_url": poster_url,
+            "backdrop_url": backdrop_url,
             "imdb_id": imdb_id,
             "imdb_rating": imdb_rating,
             "tmdb_rating": tmdb_rating,
@@ -149,33 +156,6 @@ class MovieViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-""" class MovieViewSet(viewsets.ModelViewSet):
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        new_release = self.request.query_params.get("new_release", None)
-        upcoming = self.request.query_params.get("upcoming", None)
-        language = self.request.query_params.get("language", None)
-
-        today = date.today()
-
-        if new_release is not None:
-            # Filter for movies released in the last 60 days
-            new_release_window = today - timedelta(days=60)
-            queryset = queryset.filter(
-                release_date__gte=new_release_window, release_date__lte=today
-            )
-
-        if upcoming is not None:
-            # Filter for upcoming movies
-            queryset = queryset.filter(release_date__gt=today)
-
-        if language is not None:
-            # Filter for movies by language
-            queryset = queryset.filter(languages__icontains=language)
-
-        return queryset """
-
-
 @api_view(["POST"])
 def add_movie(request):
     if request.method == "POST":
@@ -211,6 +191,7 @@ def add_movie(request):
                 genres=movie_data["genres"],
                 release_date=movie_data["release_date"],
                 poster_url=movie_data["poster_url"],
+                backdrop_url=movie_data["backdrop_url"],
                 production_countries=movie_data["production_countries"],
                 standard_user=standard_user,
                 premium_user=premium_user,
@@ -240,6 +221,7 @@ def update_movie(request, tmdb_id):
             movie.overview = movie_data["overview"]
             movie.release_date = movie_data["release_date"]
             movie.poster_url = movie_data["poster_url"]
+            movie.backdrop_url = movie_data["backdrop_url"]
             movie.imdb_id = movie_data["imdb_id"]
             movie.imdb_rating = movie_data["imdb_rating"]
             movie.tmdb_rating = movie_data["tmdb_rating"]
