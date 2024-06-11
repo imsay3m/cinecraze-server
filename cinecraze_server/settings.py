@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "user_account",
     "movies_and_series",
+    "cine_request",
 ]
 
 AUTH_USER_MODEL = "user_account.CustomUser"
@@ -122,6 +123,7 @@ DATABASES = {
 db_url = env("DATABASE_URL")
 DATABASES = {"default": dj_database_url.parse(db_url)} """
 
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587

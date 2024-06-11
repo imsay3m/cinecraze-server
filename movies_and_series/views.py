@@ -2,9 +2,19 @@ import environ
 
 env = environ.Env()
 environ.Env.read_env()
+from datetime import date, timedelta
+
 import requests
-from rest_framework import status, viewsets
+from django_filters.rest_framework import (
+    BaseInFilter,
+    BooleanFilter,
+    CharFilter,
+    DjangoFilterBackend,
+    FilterSet,
+)
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -56,7 +66,7 @@ def fetch_movie_data_from_tmdb(tmdb_id):
                 "name": cast["name"],
                 "character": cast["character"],
                 "profile_path": (
-                    f'https://image.tmdb.org/t/p/w500{cast["profile_path"]}'
+                    f'https://image.tmdb.org/t/p/w200{cast["profile_path"]}'
                     if cast.get("profile_path")
                     else ""
                 ),
@@ -67,7 +77,7 @@ def fetch_movie_data_from_tmdb(tmdb_id):
             {
                 "name": crew["name"],
                 "profile_path": (
-                    f'https://image.tmdb.org/t/p/w500{crew["profile_path"]}'
+                    f'https://image.tmdb.org/t/p/w200{crew["profile_path"]}'
                     if crew.get("profile_path")
                     else ""
                 ),
@@ -94,9 +104,76 @@ def fetch_movie_data_from_tmdb(tmdb_id):
     return None
 
 
+class CharArrayFilter(BaseInFilter, CharFilter):
+    pass
+
+
+class MovieFilter(FilterSet):
+    languages = CharFilter(field_name="languages", method="filter_languages")
+    genres = CharFilter(field_name="genres", method="filter_genres")
+    new_release = BooleanFilter(field_name="new_release", method="filter_new_release")
+    upcoming = BooleanFilter(field_name="upcoming", method="filter_upcoming")
+
+    class Meta:
+        model = Movie
+        fields = ["languages", "genres", "new_release", "upcoming"]
+
+    def filter_languages(self, queryset, name, value):
+        return queryset.filter(languages__icontains=value)
+
+    def filter_genres(self, queryset, name, value):
+        return queryset.filter(genres__icontains=value)
+
+    def filter_new_release(self, queryset, name, value):
+        if value:
+            today = date.today()
+            sixty_days_ago = today - timedelta(days=60)
+            return queryset.filter(release_date__range=(sixty_days_ago, today))
+        return queryset
+
+    def filter_upcoming(self, queryset, name, value):
+        if value:
+            return queryset.filter(release_date__gt=date.today())
+        return queryset
+
+
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = MovieFilter
+    search_fields = ["title", "overview"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+
+""" class MovieViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        new_release = self.request.query_params.get("new_release", None)
+        upcoming = self.request.query_params.get("upcoming", None)
+        language = self.request.query_params.get("language", None)
+
+        today = date.today()
+
+        if new_release is not None:
+            # Filter for movies released in the last 60 days
+            new_release_window = today - timedelta(days=60)
+            queryset = queryset.filter(
+                release_date__gte=new_release_window, release_date__lte=today
+            )
+
+        if upcoming is not None:
+            # Filter for upcoming movies
+            queryset = queryset.filter(release_date__gt=today)
+
+        if language is not None:
+            # Filter for movies by language
+            queryset = queryset.filter(languages__icontains=language)
+
+        return queryset """
 
 
 @api_view(["POST"])
