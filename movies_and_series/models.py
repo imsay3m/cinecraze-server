@@ -18,7 +18,7 @@ class Movie(models.Model):
     genres = JSONField()
     release_date = models.DateField()
     poster_url = models.URLField()
-    backdrop_url = models.URLField(null=True, blank=True)
+    backdrop_url = models.URLField()
     production_countries = JSONField()
     standard_user = models.BooleanField(default=False)
     premium_user = models.BooleanField(default=False)

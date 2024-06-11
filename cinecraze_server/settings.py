@@ -112,16 +112,16 @@ WSGI_APPLICATION = "cinecraze_server.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+""" DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}
-""" import dj_database_url
+} """
+import dj_database_url
 
 db_url = env("DATABASE_URL")
-DATABASES = {"default": dj_database_url.parse(db_url)} """
+DATABASES = {"default": dj_database_url.parse(db_url)}
 
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
