@@ -31,7 +31,7 @@ TMDB_API_KEY = env("TMDB_API_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CORS_ORIGIN_ALLOW_ALL = [
+CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
     "http://127.0.0.1:8000",
     "http://*.127.0.0.1",
@@ -39,9 +39,9 @@ CORS_ORIGIN_ALLOW_ALL = [
     "https://*.onrender.com",
     "https://*.koyeb.app",
     "https://*.up.railway.app",
-    "https://*.vercel.app/",
-    "https://imsay3m.github.io/*",
-    "https://cinecraze-client.vercel.app/",
+    "https://*.vercel.app",
+    "https://imsay3m.github.io",
+    "https://cinecraze-client.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -92,7 +92,7 @@ AUTH_USER_MODEL = "user_account.CustomUser"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "cors.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
