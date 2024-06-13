@@ -71,7 +71,7 @@ def activate(request, uid64, token):
         user.save()
         return redirect("https://cinecraze-client.vercel.app/login.html")
     else:
-        return redirect("https://cinecraze-client.vercel.app/user-registration.html")
+        return redirect("https://cinecraze-client.vercel.app/signup.html")
 
 
 class UserLoginAPIView(APIView):
@@ -85,7 +85,14 @@ class UserLoginAPIView(APIView):
             if user:
                 token, _ = Token.objects.get_or_create(user=user)
                 login(request, user)
-                return Response({"token": token.key, "user_id": user.id})
+                return Response(
+                    {
+                        "token": token.key,
+                        "user_id": user.id,
+                        "user_type": user.user_type,
+                    },
+                    status=status.HTTP_200_OK,
+                )
             else:
                 return Response({"error": "Invalid Credential"})
         return Response(serializer.errors)
@@ -111,4 +118,4 @@ class UserLogoutAPIView(APIView):
         if hasattr(request.user, "auth_token") and request.user.auth_token:
             request.user.auth_token.delete()
         logout(request)
-        return redirect("login")
+        return redirect("https://cinecraze-client.vercel.app/")

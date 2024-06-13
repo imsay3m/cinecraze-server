@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import environ
+from django.conf.global_settings import LOGIN_REDIRECT_URL, LOGIN_URL
 
 env = environ.Env()
 environ.Env.read_env()
@@ -181,6 +182,10 @@ STATIC_URL = "static/"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# LOGIN_URL = "https://cinecraze-client.vercel.app/login"
+LOGIN_REDIRECT_URL = "https://cinecraze-client.vercel.app/profile.html"
+LOGOUT_REDIRECT_URL = "https://cinecraze-client.vercel.app/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
