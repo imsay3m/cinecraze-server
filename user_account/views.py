@@ -53,9 +53,9 @@ class UserRegistrationAPIView(APIView):
             email = EmailMultiAlternatives(email_subject, "", to=[user.email])
             email.attach_alternative(email_body, "text/html")
             email.send()
-            return Response(
-                "Check Your Mail For Confirmation", status=status.HTTP_200_OK
-            )
+            return Response({
+                "message": "Check Your Mail For Confirmation",
+            }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -87,6 +87,7 @@ class UserLoginAPIView(APIView):
                 login(request, user)
                 return Response(
                     {
+                        "message": "User logged in successfully",
                         "token": token.key,
                         "user_id": user.id,
                         "user_type": user.user_type,

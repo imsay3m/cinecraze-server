@@ -171,7 +171,7 @@ def add_movie(request):
             movie_data = fetch_movie_data_from_tmdb(tmdb_id)
             if not movie_data:
                 return Response(
-                    {"error": "Failed to fetch data from TMDB"},
+                    {"error": "Failed to fetch data from TMDB. Please Check the tmdb id."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 

@@ -48,7 +48,7 @@ class MarkAsSolvedView(APIView):
                 )
 
             return Response(
-                {"status": "Request marked as solved and email sent."},
+                {"message": "Request marked as solved and email sent."},
                 status=status.HTTP_200_OK,
             )
 
