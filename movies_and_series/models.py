@@ -19,6 +19,7 @@ class Movie(models.Model):
     release_date = models.DateField()
     poster_url = models.URLField()
     backdrop_url = models.URLField()
+    trailer_url = models.URLField()
     production_countries = JSONField()
     standard_user = models.BooleanField(default=False)
     premium_user = models.BooleanField(default=False)

@@ -27,6 +27,7 @@ class MovieSerializer(serializers.ModelSerializer):
             "release_date",
             "poster_url",
             "backdrop_url",
+            "trailer_url",
             "production_countries",
         ]
         extra_kwargs = {
@@ -44,5 +45,6 @@ class MovieSerializer(serializers.ModelSerializer):
             "release_date": {"required": False},
             "poster_url": {"required": False},
             "backdrop_url": {"required": False},
+            "trailer_url": {"required": False},
             "production_countries": {"required": False},
         }

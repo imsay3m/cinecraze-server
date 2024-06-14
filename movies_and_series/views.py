@@ -24,6 +24,7 @@ from .serializers import MovieSerializer
 TMDB_API_KEY = env.str("TMDB_API_KEY")
 TMDB_MOVIE_API_URL = "https://api.themoviedb.org/3/movie/{}"
 TMDB_MOVIE_CREDITS_URL = "https://api.themoviedb.org/3/movie/{}/credits"
+TMDB_MOVIE_VIDEOS_URL = "https://api.themoviedb.org/3/movie/{}/videos"
 
 
 def fetch_movie_data_from_tmdb(tmdb_id):
@@ -37,10 +38,18 @@ def fetch_movie_data_from_tmdb(tmdb_id):
     credits_response = requests.get(
         TMDB_MOVIE_CREDITS_URL.format(tmdb_id), params={"api_key": TMDB_API_KEY}
     )
+    videos_response = requests.get(
+        TMDB_MOVIE_VIDEOS_URL.format(tmdb_id), params={"api_key": TMDB_API_KEY}
+    )
 
-    if response.status_code == 200 and credits_response.status_code == 200:
+    if (
+        response.status_code == 200
+        and credits_response.status_code == 200
+        and videos_response.status_code == 200
+    ):
         tmdb_data = response.json()
         credits_data = credits_response.json()
+        videos_data = videos_response.json()
 
         title = tmdb_data.get("title")
         overview = tmdb_data.get("overview")
@@ -65,6 +74,11 @@ def fetch_movie_data_from_tmdb(tmdb_id):
         production_countries = [
             country["name"] for country in tmdb_data.get("production_countries", [])
         ]
+        trailer_url = ""
+        for video in videos_data.get("results", []):
+            if video["site"] == "YouTube" and video["type"] == "Trailer":
+                trailer_url = f"https://www.youtube.com/watch?v={video['key']}"
+                break
 
         # Get cast and director
         casts = [
@@ -99,6 +113,7 @@ def fetch_movie_data_from_tmdb(tmdb_id):
             "release_date": release_date,
             "poster_url": poster_url,
             "backdrop_url": backdrop_url,
+            "trailer_url": trailer_url,
             "imdb_id": imdb_id,
             "imdb_rating": imdb_rating,
             "tmdb_rating": tmdb_rating,
@@ -171,7 +186,9 @@ def add_movie(request):
             movie_data = fetch_movie_data_from_tmdb(tmdb_id)
             if not movie_data:
                 return Response(
-                    {"error": "Failed to fetch data from TMDB. Please Check the tmdb id."},
+                    {
+                        "error": "Failed to fetch data from TMDB. Please Check the tmdb id."
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -192,6 +209,7 @@ def add_movie(request):
                 release_date=movie_data["release_date"],
                 poster_url=movie_data["poster_url"],
                 backdrop_url=movie_data["backdrop_url"],
+                trailer_url=movie_data["trailer_url"],
                 production_countries=movie_data["production_countries"],
                 standard_user=standard_user,
                 premium_user=premium_user,
@@ -222,6 +240,7 @@ def update_movie(request, tmdb_id):
             movie.release_date = movie_data["release_date"]
             movie.poster_url = movie_data["poster_url"]
             movie.backdrop_url = movie_data["backdrop_url"]
+            movie.trailer_url = movie_data["trailer_url"]
             movie.imdb_id = movie_data["imdb_id"]
             movie.imdb_rating = movie_data["imdb_rating"]
             movie.tmdb_rating = movie_data["tmdb_rating"]
