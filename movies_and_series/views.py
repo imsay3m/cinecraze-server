@@ -135,10 +135,23 @@ class MovieFilter(FilterSet):
     genres = CharFilter(field_name="genres", method="filter_genres")
     new_release = BooleanFilter(field_name="new_release", method="filter_new_release")
     upcoming = BooleanFilter(field_name="upcoming", method="filter_upcoming")
+    tmdb_id = CharFilter(field_name="tmdb_id", lookup_expr="exact")
+    imdb_id = CharFilter(field_name="imdb_id", lookup_expr="exact")
+    production_countries = CharFilter(
+        field_name="production_countries", method="filter_production_countries"
+    )
 
     class Meta:
         model = Movie
-        fields = ["languages", "genres", "new_release", "upcoming"]
+        fields = [
+            "languages",
+            "genres",
+            "new_release",
+            "upcoming",
+            "tmdb_id",
+            "imdb_id",
+            "production_countries",
+        ]
 
     def filter_languages(self, queryset, name, value):
         return queryset.filter(languages__icontains=value)
@@ -157,6 +170,9 @@ class MovieFilter(FilterSet):
         if value:
             return queryset.filter(release_date__gt=date.today())
         return queryset
+
+    def filter_production_countries(self, queryset, name, value):
+        return queryset.filter(production_countries__icontains=value)
 
 
 class MovieViewSet(viewsets.ModelViewSet):
