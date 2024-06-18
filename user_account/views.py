@@ -53,9 +53,12 @@ class UserRegistrationAPIView(APIView):
             email = EmailMultiAlternatives(email_subject, "", to=[user.email])
             email.attach_alternative(email_body, "text/html")
             email.send()
-            return Response({
-                "message": "Check Your Mail For Confirmation",
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "message": "Check Your Mail For Confirmation",
+                },
+                status=status.HTTP_200_OK,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -119,4 +122,4 @@ class UserLogoutAPIView(APIView):
         if hasattr(request.user, "auth_token") and request.user.auth_token:
             request.user.auth_token.delete()
         logout(request)
-        return redirect("https://cinecraze-client.vercel.app/")
+        return redirect("login")
