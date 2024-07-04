@@ -23,11 +23,11 @@ from django.urls import include, path
 from .views import health_check
 
 urlpatterns = [
+    path("", health_check, name="health_check"),
     path("admin/", admin.site.urls),
     path("user/", include("user_account.urls")),
     path("api/", include("movies_and_series.urls")),
     path("auth/", include("rest_framework.urls")),
-    path("healthz/", health_check, name="health_check"),
 ]
 
 
